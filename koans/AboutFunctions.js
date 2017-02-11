@@ -1,15 +1,15 @@
-describe("About Functions", function() {
+describe("About Functions", () => {
 
-  it("should declare functions", function() {
+  it("should declare functions", () => {
 
     function add(a, b) {
       return a + b;
     }
 
-    expect(add(1, 2)).toBe(FILL_ME_IN);
+    expect(add(1, 2)).toBe(3);
   });
 
-  it("should know internal variables override outer variables", function () {
+  it("should know internal variables override outer variables", () => {
     var message = "Outer";
 
     function getMessage() {
@@ -21,53 +21,54 @@ describe("About Functions", function() {
       return message;
     }
 
-    expect(getMessage()).toBe(FILL_ME_IN);
-    expect(overrideMessage()).toBe(FILL_ME_IN);
-    expect(message).toBe(FILL_ME_IN);
+    expect(getMessage()).toBe("Outer");
+    expect(overrideMessage()).toBe("Inner");
+    expect(message).toBe("Outer");
   });
 
-  it("should have lexical scoping", function () {
+  it("should have lexical scoping", () => {
     var variable = "top-level";
+
     function parentfunction() {
       var variable = "local";
+
       function childfunction() {
         return variable;
       }
       return childfunction();
     }
-    expect(parentfunction()).toBe(FILL_ME_IN);
+    expect(parentfunction()).toBe("local");
   });
 
-  it("should use lexical scoping to synthesise functions", function () {
+  it("should use lexical scoping to synthesise functions", () => {
 
-    function makeMysteryFunction(makerValue)
-    {
-      var newFunction = function doMysteriousThing(param)
-      {
+    function makeMysteryFunction(makerValue) {
+      const newFunction = function doMysteriousThing(param) {
         return makerValue + param;
       };
+
       return newFunction;
     }
 
-    var mysteryFunction3 = makeMysteryFunction(3);
-    var mysteryFunction5 = makeMysteryFunction(5);
+    const mysteryFunction3 = makeMysteryFunction(3);
+    const mysteryFunction5 = makeMysteryFunction(5);
 
-    expect(mysteryFunction3(10) + mysteryFunction5(5)).toBe(FILL_ME_IN);
+    expect(mysteryFunction3(10) + mysteryFunction5(5)).toBe(23);
   });
 
-  it("should allow extra function arguments", function () {
+  it("should allow extra function arguments", () => {
 
     function returnFirstArg(firstArg) {
       return firstArg;
     }
 
-    expect(returnFirstArg("first", "second", "third")).toBe(FILL_ME_IN);
+    expect(returnFirstArg("first", "second", "third")).toBe("first");
 
     function returnSecondArg(firstArg, secondArg) {
       return secondArg;
     }
 
-    expect(returnSecondArg("only give first arg")).toBe(FILL_ME_IN);
+    expect(returnSecondArg("only give first arg")).toBe(undefined);
 
     function returnAllArgs() {
       var argsArray = [];
@@ -77,24 +78,37 @@ describe("About Functions", function() {
       return argsArray.join(",");
     }
 
-    expect(returnAllArgs("first", "second", "third")).toBe(FILL_ME_IN);
+    expect(returnAllArgs("first", "second", "third")).toBe("first,second,third");
   });
 
-  it("should pass functions as values", function () {
+  it("should pass functions as values", () => {
 
-    var appendRules = function (name) {
-      return name + " rules!";
+    const appendRules = name => name + " rules!";
+
+    const appendDoubleRules = name => name + " totally rules!";
+
+    var praiseSinger = {
+      givePraise: appendRules
     };
-
-    var appendDoubleRules = function (name) {
-      return name + " totally rules!";
-    };
-
-    var praiseSinger = { givePraise: appendRules };
-    expect(praiseSinger.givePraise("John")).toBe(FILL_ME_IN);
+    expect(praiseSinger.givePraise("John")).toBe("John rules!");
 
     praiseSinger.givePraise = appendDoubleRules;
-    expect(praiseSinger.givePraise("Mary")).toBe(FILL_ME_IN);
+    expect(praiseSinger.givePraise("Mary")).toBe("Mary totally rules!");
 
   });
+
+  it('should not have `this` context using arrow functions in objects', () => {
+    const dummyObject = {
+      name: 'Angela',
+      surname: 'Fox',
+      getFullName: function() {
+        const getSurname = () => this.surname;
+        const getName = () => this.name;
+
+        return [getName(), getSurname()].join(' ');
+      }
+    }
+
+    expect(dummyObject.getFullName()).toBe('Angela Fox')
+  })
 });
